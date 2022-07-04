@@ -7,13 +7,13 @@ and the default file located at /etc/nginx/sites-available/default either gets d
 Once the respective files have been placed and edited, simply run
 ```bash
 sudo nginx -t
-'''
+```
 to confirm files have been confured correctly.
 
 Then run
 ```bash
 sudo nginx -s reload
-'''
+```
 to load the new configuration file.
 
 ## WEB HTML FILES
