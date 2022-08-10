@@ -4,66 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>La Trobe Telehealth Demo Portal </title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        .row {
-            width: 100%;
-        }
-
-        /* Create two unequal columns that floats next to each other */
-        .column {
-            float: left;
-            padding: 10px;
-            height: 100%;
-            /* Should be removed. Only for demonstration */
-        }
-
-        .left {
-            width: 80%;
-        }
-
-        .right {
-            width: 20%;
-            vertical-align: middle;
-        }
-
-        /* Clear floats after the columns */
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        .btn-group button {
-            background-color: MediumSeaGreen;
-            border: 1px solid 808080;
-            color: black;
-            padding: 10px 24px;
-            cursor: pointer;
-            width: 100%;
-            display: block;
-        }
-
-        .btn-group button:not(:last-child) {
-            border-bottom: none;
-        }
-
-        /* Clear floats (clearfix hack) */
-        .btn-group:after {
-            content: "";
-            clear: both;
-            display: table;
-        }
-
-        .btn-group button:hover {
-            background-color: #414040;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script src="https://jitsi-telehealth.mywire.org/external_api.js"></script>  <!-- Include the script from here. It should be included in your jitsi installation. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+
+    <script src="index.js"></script>
 
 </head>
 
@@ -85,9 +30,9 @@
                 <button id="stream-btn" onclick="streamHandler()">Start Steam</button>          <!-- I've made a function here.-->
             </div>
 
-            <p style="padding: 8%; border: 2px solid red;background-color:#ff9999">SENSOR1 DATA...</p>
-            <p style="padding: 8%; border: 2px solid #00b7eb;background-color:#b9f2ff">SENSOR2 DATA...</p>
-            <p style="padding: 8%; border: 2px solid magenta;background-color:#FFC9FF">SENSOR3 DATA...</p>
+            <p style="padding: 8%; border: 2px solid red;background-color:#ff9999" id="thermometer">SENSOR1 DATA...</p>
+            <p style="padding: 8%; border: 2px solid #00b7eb;background-color:#b9f2ff" id = "bloodoxygen">SENSOR2 DATA...</p>
+            <p style="padding: 8%; border: 2px solid magenta;background-color:#FFC9FF" id = "heartrate">SENSOR3 DATA...</p>
             <p style="padding: 8%; border: 2px solid orange;background-color:lightgoldenrodyellow">SENSOR4 DATA...</p>
             <p style="padding: 8%; border: 2px solid green;background-color:#99CCCC">SENSOR4 DATA...</p>
 
