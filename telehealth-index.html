@@ -6,13 +6,12 @@
     <title>La Trobe Telehealth Demo Portal </title>
     <link rel="stylesheet" href="style.css">
     <script src="https://jitsi-telehealth.mywire.org/external_api.js"></script>  <!-- Include the script from here. It should be included in your jitsi installation. -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.js" integrity="sha512-p8OrcnawEEpEiY7S96nMeaShY5AMcdRFYgnaR0ZmOgMSgL9pLNE4x5+MB0FTol7GeJGzEd9m4MAmmD8urOscvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
     <script src="index.js"></script>
 
 </head>
 
-<body style="background-color:Gray;">
+<body style="background-color:rgb(210, 210, 210);">
 
     <div class="row">
 
@@ -21,21 +20,33 @@
         </div>
 
         <div class="column right">
-            <div class="btn-group">
-                <button onclick="api.executeCommand('toggleAudio')">Mute/Unmute Mic</button>    <!-- You can add buttons like this ad infinitum.-->
-                <button onclick="api.executeCommand('muteEveryone')">Mute All</button>          <!-- As for what you can do with them;-->
-                <button onclick="api.executeCommand('toggleVideo')">Stop/Start Cam</button>     <!-- check https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe -->
-                <button onclick="alert('This one is tricky and should be customized according to need')">Cam/Mic</button>
-                <button onclick="api.executeCommand('toggleShareScreen')">Share Screen</button>
-                <button id="stream-btn" onclick="streamHandler()">Start Steam</button>          <!-- I've made a function here.-->
+            
+           <!-- <div class="btn-group"> -->
+               <!-- <button onclick="api.executeCommand('toggleAudio')">Mute/Unmute Mic</button> -->   <!-- You can add buttons like this ad infinitum.-->
+               <!-- <button onclick="api.executeCommand('muteEveryone')">Mute All</button>  -->        <!-- As for what you can do with them;-->
+               <!-- <button onclick="api.executeCommand('toggleVideo')">Stop/Start Cam</button> -->    <!-- check https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe -->
+                <!-- <button onclick="alert('This one is tricky and should be customized according to need')">Cam/Mic</button> -->
+                <!-- <button onclick="api.executeCommand('toggleShareScreen')">Share Screen</button> -->
+              <!--  <button id="stream-btn" onclick="streamHandler()">Start Steam</button>     -->     <!-- I've made a function here.-->
+            <!-- </div> -->
+            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
+                <p>TEMPERATURE</p>
+                <p style="padding: 10%; border: 1px solid red; border-radius: 10px; background-color:#ff9999" id="thermometer">SENSOR1 DATA...</p>
+                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "temp_time">Time</h6>
+            </div>
+            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
+                <p>OXIMETER</p>
+                <p style="padding: 10%; border: 1px solid #00b7eb; border-radius: 10px; background-color:#b9f2ff" id = "bloodoxygen">SENSOR2 DATA...</p>
+                <p style="padding: 10%; border: 1px solid magenta; border-radius: 10px; background-color:#FFC9FF" id = "heartrate">SENSOR3 DATA...</p>
+                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "oximeter_time">Time</h6>
             </div>
 
-            <p style="padding: 8%; border: 2px solid red;background-color:#ff9999" id="thermometer">SENSOR1 DATA...</p>
-            <p style="padding: 8%; border: 2px solid #00b7eb;background-color:#b9f2ff" id = "bloodoxygen">SENSOR2 DATA...</p>
-            <p style="padding: 8%; border: 2px solid magenta;background-color:#FFC9FF" id = "heartrate">SENSOR3 DATA...</p>
-            <p style="padding: 8%; border: 2px solid orange;background-color:lightgoldenrodyellow">SENSOR4 DATA...</p>
-            <p style="padding: 8%; border: 2px solid green;background-color:#99CCCC">SENSOR4 DATA...</p>
-
+            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
+                <p>BLOOD PRESSURE</p>
+                <p style="padding: 10%; border: 1px solid green; border-radius: 10px; background-color:#99CCCC" id = "bpressure_low">SENSOR4 DATA...</p>
+               <p style="padding: 10%; border: 1px solid orange; border-radius: 10px; background-color:lightgoldenrodyellow" id = "bpressure_high">SENSOR4 DATA...</p>
+               <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "bp_time">Time</h6>
+            </div>
             <!-- <div>
                 <span id="streamingResponseMsg"></span>
             </div> -->
