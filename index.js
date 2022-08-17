@@ -29,7 +29,6 @@ var pahoOptions = {
         console.log("== [PAHO] SUBSCRIBING TO: THERMOMETER-TEMPERATURE ==");
         client.subscribe("thermometer-temperature", {qos: 1});
         
-        
         console.log("== [PAHO] SUBSCRIBING TO: BLOOD-PRESSURE ==");
         client.subscribe("blood-pressure", {qos: 1});
         // ===================
@@ -158,6 +157,7 @@ client.onMessageArrived = function (message) {
 console.log("== [PAHO] CONNECTING TO: " + wsbroker + ":" + wssport + " ==");
 client.connect(pahoOptions);
 
+// does...
 function getDate(){
     var new_date = new Date();
     var date_array = new_date.toString().split(" ");
@@ -169,34 +169,31 @@ function getDate(){
     return date_time;
 }
 
+// does...
 function timeSince(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
-    var interval = seconds / 31536000;
     
+    var interval = seconds / 31536000;   
     if (interval > 1) {
         return Math.floor(interval) + " years";
     }
   
     interval = seconds / 2592000;
-  
     if (interval > 1) {
         return Math.floor(interval) + " months";
     }
   
     interval = seconds / 86400;
-    
     if (interval > 1) {
         return Math.floor(interval) + " days";
     }
   
     interval = seconds / 3600;
-    
     if (interval > 1) {
         return Math.floor(interval) + " hours";
     }
     
     interval = seconds / 60;
-  
     if (interval > 1) {
         return Math.floor(interval) + " minutes";
     }
