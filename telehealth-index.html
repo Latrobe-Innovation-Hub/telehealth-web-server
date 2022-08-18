@@ -39,27 +39,4 @@
         </div>
     </div>
 </body>
-<script>
-    // ====================================
-    // THE MAIN JITSI API CALL CODE SECTION
-    // ====================================
-
-    // set url for jitsi meet server API
-    const domain = "jitsi-telehealth.mywire.org";
-
-    // set jitsi meet API connection options
-    const options = {
-        roomName: "La Trobe Telehealth Demo",
-        //width: 1200px,
-        //height: 900px,
-        parentNode: document.querySelector('#meet'),    //Now, you declare here which element should parent your stream.
-        configOverwrite: { disableTileView: true },     //You can turn on or off config elements with this prop.
-        interfaceConfigOverwrite: { 
-            //TOOLBAR_BUTTONS: []
-        },
-    };
-    
-    // instantiate jitsi meet connection to API
-    const api = new JitsiMeetExternalAPI(domain, options);
-</script>
 </html>
