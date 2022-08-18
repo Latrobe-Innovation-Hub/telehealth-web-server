@@ -1,3 +1,37 @@
+// ===========================
+// JITSI API CALL CODE SECTION
+// ===========================
+
+// set url for jitsi meet server API
+const domain = "jitsi-telehealth.mywire.org";
+
+// set jitsi meet API connection options
+const options = {
+    roomName: "La Trobe Telehealth Demo",
+    userInfo: {
+        displayName: 'Remote Doctor',
+    },
+    //width: 1200px,
+    //height: 900px,
+    parentNode: document.getElementById('meet'),    //Now, you declare here which element should parent your stream.
+    configOverwrite: { disableTileView: true },     //You can turn on or off config elements with this prop.
+    interfaceConfigOverwrite: {
+        //TOOLBAR_BUTTONS: []
+    },
+};
+
+// instantiate jitsi meet connection to API
+try {
+    const api = new JitsiMeetExternalAPI(domain, options);
+} catch (error) {
+    console.log("== [jitsi] FAILED! ==", error);
+};
+
+
+// ===============================
+// MQTT PAHO/RABBITMQ CODE SECTION
+// ===============================
+
 // set broker url
 var wsbroker = "rabbitmq-telehealth.mywire.org";
 
