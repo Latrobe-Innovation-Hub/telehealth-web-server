@@ -7,13 +7,13 @@ const domain = "jitsi-telehealth.mywire.org";
 
 // set jitsi meet API connection options
 const options = {
-    roomName: "La Trobe Telehealth Demo",
+    roomName: "telehealth-demo",
     userInfo: {
-        displayName: 'Remote Doctor',
+        displayName: "unspecified",
     },
     //width: 1200px,
     //height: 900px,
-    parentNode: document.getElementById('meet'),    //Now, you declare here which element should parent your stream.
+    parentNode: document.getElementById("meet"),    //Now, you declare here which element should parent your stream.
     configOverwrite: { disableTileView: true },     //You can turn on or off config elements with this prop.
     interfaceConfigOverwrite: {
         //TOOLBAR_BUTTONS: []
@@ -23,10 +23,22 @@ const options = {
 // instantiate jitsi meet connection to API
 try {
     const api = new JitsiMeetExternalAPI(domain, options);
+
+    // set jitsi user name via html radio buttons
+    function setUser() {
+        var userType = document.getElementById("user_type_form").user_type;
+
+        if (userType.value == "RD") {
+            console.log(userType.value);
+            api.executeCommand("displayName", "Remote Doctor");
+        } else if (userType.value == "AN") {
+            console.log(userType.value);
+            api.executeCommand("displayName", "Attending Nurse");
+        }
+    }
 } catch (error) {
     console.log("== [jitsi] FAILED! ==", error);
 };
-
 
 // ===============================
 // MQTT PAHO/RABBITMQ CODE SECTION
@@ -199,28 +211,28 @@ function getDate(){
     var day = date_array[2];
     var year = date_array[3];
     var time = date_array[4];
-    var date_time = time + "  " + day + " " + month + " " + year 
+    var date_time = time + "  " + day + " " + month + " " + year
     return date_time;
 }
 
 // does...
 function timeSince(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
-    
-    var interval = seconds / 31536000;   
+
+    var interval = seconds / 31536000;
     if (interval > 1) { return Math.floor(interval) + " years"; }
-  
+
     interval = seconds / 2592000;
     if (interval > 1) { return Math.floor(interval) + " months"; }
-  
+
     interval = seconds / 86400;
     if (interval > 1) { return Math.floor(interval) + " days"; }
-  
+
     interval = seconds / 3600;
     if (interval > 1) { return Math.floor(interval) + " hours"; }
-    
+
     interval = seconds / 60;
     if (interval > 1) { return Math.floor(interval) + " minutes"; }
-    
+
     return Math.floor(seconds) + " seconds";
 }
