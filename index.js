@@ -203,6 +203,11 @@ client.onMessageArrived = function (message) {
 console.log("== [PAHO] CONNECTING TO: " + wsbroker + ":" + wssport + " ==");
 client.connect(pahoOptions);
 
+
+// =======================
+// HELPER FUNCTION SECTION
+// =======================
+
 // does...
 function getDate(){
     var new_date = new Date();
