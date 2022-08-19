@@ -33,8 +33,16 @@
             <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
                 <p>BLOOD PRESSURE</p>
                 <p style="padding: 10%; border: 1px solid green; border-radius: 10px; background-color:#99CCCC" id = "bpressure_high">bp high: ...</p>
-               <p style="padding: 10%; border: 1px solid orange; border-radius: 10px; background-color:lightgoldenrodyellow" id = "bpressure_low">bp low: ...</p>
-               <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "bp_time"></h6>
+                <p style="padding: 10%; border: 1px solid orange; border-radius: 10px; background-color:lightgoldenrodyellow" id = "bpressure_low">bp low: ...</p>
+                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "bp_time"></h6>
+            </div>
+            <!-- user role div -->
+            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
+                <form id="user_type_form" style = "margin-bottom: auto;">
+                    <p style = "margin: auto;">Please select your role:</p>
+                    <input type="radio" id="html" name="user_type" value="RD" onClick="setUser();">Remote Doctor<br>
+                    <input type="radio" id="html" name="user_type" value="AN" onClick="setUser();">Attending Nurse
+                </form>
             </div>
         </div>
     </div>
