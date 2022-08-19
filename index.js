@@ -29,10 +29,10 @@ try {
         var userType = document.getElementById("user_type_form").user_type;
 
         if (userType.value == "RD") {
-            console.log(userType.value);
+            console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Remote Doctor\"", " ==");
             api.executeCommand("displayName", "Remote Doctor");
         } else if (userType.value == "AN") {
-            console.log(userType.value);
+            console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Attending Nurse\"", " ==");
             api.executeCommand("displayName", "Attending Nurse");
         }
     }
