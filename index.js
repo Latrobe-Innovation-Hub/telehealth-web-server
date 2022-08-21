@@ -20,24 +20,26 @@ const options = {
     },
 };
 
+var api = {}; 
+
 // instantiate jitsi meet connection to API
 try {
-    const api = new JitsiMeetExternalAPI(domain, options);
-
-    // set jitsi user name via html radio buttons
-    function setUser() {
-        var userType = document.getElementById("user_type_form").user_type;
-
-        if (userType.value == "RD") {
-            console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Remote Doctor\"", " ==");
-            api.executeCommand("displayName", "Remote Doctor");
-        } else if (userType.value == "AN") {
-            console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Attending Nurse\"", " ==");
-            api.executeCommand("displayName", "Attending Nurse");
-        }
-    }
+    api = new JitsiMeetExternalAPI(domain, options);
 } catch (error) {
     console.log("== [jitsi] FAILED! ==", error);
+};
+
+// set jitsi user name via html radio buttons
+function setUser() {
+    var userType = document.getElementById("user_type_form").user_type;
+    
+    if (userType.value == "RD") {
+        console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Remote Doctor\"", " ==");
+        api.executeCommand("displayName", "Remote Doctor");
+    } else if (userType.value == "AN") {
+        console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Attending Nurse\"", " ==");
+        api.executeCommand("displayName", "Attending Nurse");
+    }
 };
 
 // ===============================
