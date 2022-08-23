@@ -54,3 +54,23 @@
 .btn-group button:hover {
     background-color: #414040;
 }
+
+.blinking{
+    animation:blinkingText 1.2s infinite;
+    font-size: 35px;
+}
+@keyframes blinkingText{
+    0%{     color: #000;    }
+    49%{    color: #000; }
+    60%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: #000;    }
+}
+
+.dot {
+  height: 25px;
+  width: 25px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}

@@ -20,6 +20,12 @@ const options = {
     },
 };
 
+var temp_live = document.getElementById("thermometer_dot");
+            setTimeout(() => {
+              temp_live.style.display="none";
+
+            },5000);
+
 var api = {}; 
 
 // instantiate jitsi meet connection to API
@@ -137,6 +143,12 @@ client.onMessageArrived = function (message) {
             // update message web timestamp
             var time_temp = document.getElementById("temp_time");
             time_temp.innerHTML =  getDate();
+
+            var temp_live = document.getElementById("thermometer_dot");
+            setTimeout(() => {
+              temp_live.style.display="block";
+
+            },2000);
         }
     }
 
