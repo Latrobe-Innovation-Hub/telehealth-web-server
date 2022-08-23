@@ -20,6 +20,9 @@ const options = {
     },
 };
 
+
+//Testing to see if the live button will hide after a delay. 
+// Potential method could be to add a dot for 5 seconds when a message is received
 var temp_live = document.getElementById("thermometer_dot");
             setTimeout(() => {
               temp_live.style.display="none";
@@ -144,6 +147,9 @@ client.onMessageArrived = function (message) {
             var time_temp = document.getElementById("temp_time");
             time_temp.innerHTML =  getDate();
 
+
+            // Set live dot to appear
+            // Delay of 5 seconds which will hide the live button when no messages received.
             var temp_live = document.getElementById("thermometer_dot");
             setTimeout(() => {
               temp_live.style.display="block";
