@@ -7,6 +7,9 @@
     <script src="https://jitsi-telehealth.mywire.org/external_api.js"></script>  <!-- Include the script from here. It should be included in your jitsi installation. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.js" integrity="sha512-p8OrcnawEEpEiY7S96nMeaShY5AMcdRFYgnaR0ZmOgMSgL9pLNE4x5+MB0FTol7GeJGzEd9m4MAmmD8urOscvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
     <script src="index.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
 </head>
 <body style="background-color:rgb(210, 210, 210);">
     <div class="row">
@@ -17,34 +20,31 @@
         <!-- ihealth mqtt sensor messages div -->
         <div class="column right">
             <!-- temperature sensor div -->
-            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
-                <p>TEMPERATURE</p>
-                <p style="padding: 10%; border: 1px solid red; border-radius: 10px; background-color:#ff9999" id="thermometer">temp(c): ...</p>
-                <span class = "blinking" id="thermometer_dot"></span>
+            <!-- <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <canvas id="myChart" style ="min-height:100px; max-height: 200px;"></canvas>
+            </div> -->
+            <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <p style="font-family: arial; margin: 5px">TEMPERATURE</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color: white" id="thermometer">temp(c): ...</p>
+
                 <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "temp_time"></h6>
             </div>
             <!-- oximeter sensor div -->
-            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
-                <p>OXIMETER</p>
-                <p style="padding: 10%; border: 1px solid #00b7eb; border-radius: 10px; background-color:#b9f2ff" id = "bloodoxygen">spO2: ...</p>
-                <p style="padding: 10%; border: 1px solid magenta; border-radius: 10px; background-color:#FFC9FF" id = "heartrate">hr(bpm): ...</p>
-                <span class = "blinking" id="oximeter_dot">
-                    .
-                </span>
+            <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <p style="font-family: arial; margin: 5px">OXIMETER</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color: white" id = "bloodoxygen">spO2: ...</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color:white" id = "heartrate">hr(bpm): ...</p>
                 <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "oximeter_time"></h6>
             </div>
             <!-- blood pressure sensor div -->
-            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
-                <p>BLOOD PRESSURE</p>
-                <p style="padding: 10%; border: 1px solid green; border-radius: 10px; background-color:#99CCCC" id = "bpressure_high">bp high: ...</p>
-                <p style="padding: 10%; border: 1px solid orange; border-radius: 10px; background-color:lightgoldenrodyellow" id = "bpressure_low">bp low: ...</p>
-                <span class = "blinking" id="bp_dot">
-                    .
-                </span>
+            <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <p style="font-family: arial; margin: 5px;">BLOOD PRESSURE</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px;margin: 5px;  background-color:white" id = "bpressure_high">bp high: ...</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color:white" id = "bpressure_low">bp low: ...</p>
                 <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "bp_time"></h6>
             </div>
             <!-- user role div -->
-            <div style = "border: 1px solid black; border-radius: 10px; padding: 5px; margin: 5px;">
+            <div style = " padding: 10px; margin: 5px; background-color: #ffffff">
                 <form id="user_type_form" style = "margin-bottom: auto;">
                     <p style = "margin: auto;">Please select your role:</p>
                     <input type="radio" id="html" name="user_type" value="RD" onClick="setUser();">Remote Doctor<br>

@@ -14,7 +14,8 @@ const options = {
     //width: 1200px,
     //height: 900px,
     parentNode: document.getElementById("meet"),    //Now, you declare here which element should parent your stream.
-    configOverwrite: { disableTileView: true },     //You can turn on or off config elements with this prop.
+    configOverwrite: { disableTileView: false // Set the size of the local participant's tile to 20% of the screen width // Disable tile view for small meetings
+ },     //You can turn on or off config elements with this prop.
     interfaceConfigOverwrite: {
         //TOOLBAR_BUTTONS: []
     },
@@ -23,11 +24,11 @@ const options = {
 
 //Testing to see if the live button will hide after a delay. 
 // Potential method could be to add a dot for 5 seconds when a message is received
-var temp_live = document.getElementById("thermometer_dot");
-temp_live.innerHTML=".";
-            setTimeout(() => {
-                temp_live.style.display="none"
-            },5000);
+// var temp_live = document.getElementById("thermometer_dot");
+// temp_live.innerHTML=".";
+//             setTimeout(() => {
+//                 temp_live.style.display="none"
+//             },5000);
 
 var api = {}; 
 
@@ -262,3 +263,43 @@ function timeSince(date) {
 
     return Math.floor(seconds) + " seconds";
 }
+
+
+// =======================
+//         CHART
+// =======================
+
+// const ctx = document.getElementById('myChart');
+// const labels = []
+// const data = {
+//   labels: labels,
+//   datasets: [{
+//     label: 'My First Dataset',
+//     data: [],
+//     fill: false,
+//     borderColor: 'rgb(75, 192, 192)',
+//     tension: 0.8
+//   },
+// //   
+// ]
+// };
+      
+// const myLineChart = new Chart(ctx, {
+//                         type: 'line',
+//                         data: data,
+//                         options: {
+//                             scales: {
+//                             y: {
+//                                 beginAtZero: false
+//                             }
+//                             }
+//                         }
+//                     });
+
+// function addData(chart, label, data) {
+//     chart.data.labels.push(label);
+//     chart.data.datasets.forEach((dataset) => {
+//         dataset.data.push(data);
+//     });
+//     chart.update();
+// }
