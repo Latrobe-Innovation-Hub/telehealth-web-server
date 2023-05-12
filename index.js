@@ -57,7 +57,7 @@ function setUser() {
 // ===============================
 
 // set broker url
-var wsbroker = "rabbitmq-telehealth.mywire.org";
+var wsbroker = "rabbitmq-telehealth.freeddns.org";
 
 // set websocket ports
 var wsport = 15675;
@@ -111,7 +111,7 @@ client.onConnectionLost = function (responseObject) {
 var first_msg_oxy = true;
 var first_msg_thermo = true;
 var first_msg_bp = true;
-
+var pulse_array = []
 // called when a message arrives
 client.onMessageArrived = function (message) {
     console.log("== [PAHO] MESSAGE ARRIVED! : " + message.payloadString + " ==");
@@ -147,16 +147,17 @@ client.onMessageArrived = function (message) {
             // update message web timestamp
             var time_temp = document.getElementById("temp_time");
             time_temp.innerHTML =  getDate();
+            addData(myLineChart, time, temp);
 
 
-            // Set live dot to appear
-            // Delay of 5 seconds which will hide the live button when no messages received.
-            var temp_live = document.getElementById("thermometer_dot");
-            temp_live.innerHTML = ".";
-            setTimeout(() => {
-              temp_live.style.display="none";
+        // Set live dot to appear
+        // Delay of 5 seconds which will hide the live button when no messages received.
+        //     var temp_live = document.getElementById("thermometer_dot");
+        //     temp_live.innerHTML = ".";
+        //     setTimeout(() => {
+        //       temp_live.style.display="none";
 
-            },5000);
+        //     },5000);
         }
     }
 
@@ -175,6 +176,20 @@ client.onMessageArrived = function (message) {
             var oxygen_data = document.getElementById("bloodoxygen");
             var oximeter_array = message.payloadString.split(",");
             var oxygen = parseInt(oximeter_array[1]);
+
+            var payload = message.payloadString;
+            var start_index = payload.indexOf("[") + 1;
+            var end_index = payload.indexOf("]");
+            var pulsewave_str = payload.slice(start_index, end_index);
+            var pulsewave_array = pulsewave_str.split(",");
+            console.log("LOGGING" + pulsewave_array)
+            pulse_array.push(pulsewave_array);
+            const y_data = pulse_array
+            const x_data = time
+
+           pulsewave_array.forEach((pulse) => {
+               addData(myLineChart, " ", pulse);
+           })
 
             // update message web data
             oxygen_data.innerHTML = "spO2: " + oxygen;
@@ -231,6 +246,52 @@ client.connect(pahoOptions);
 // =======================
 
 // does...
+
+function server_status(server, state) {
+    var icon = "-icon";
+    var text = "-text";
+
+    let server_icon = server.concat(icon);
+    let server_text = server.concat(text);
+
+    var server_state_icon = document.getElementById(server_icon);
+    var server_state_text = document.getElementById(server_text);
+
+    if (state == "connecting" || state == "checking") {
+      server_state_icon.textContent="[-] ";
+      server_state_icon.style.color="orange";
+      if (state == "connecting") {
+        server_state_text.textContent=" connecting";
+        return server.concat(" connecting");
+      } else {
+        server_state_text.textContent=" checking";
+        return server.concat(" checking");
+      }
+    } else if (state == "connected" || state == "supported") {
+      server_state_icon.textContent="[+] ";
+      server_state_icon.style.color="green";
+      if (state == "connected") {
+        server_state_text.textContent=" connected";
+        return "connected";
+      } else {
+        server_state_text.textContent=" supported";
+        return server.concat(" supported");
+      }
+    } else if (state == "disconnected" || state == "not supported") {
+      server_state_icon.textContent="[x] ";
+      server_state_icon.style.color="red";
+      if (state == "disconnected") {
+        server_state_text.textContent=" disconnected";
+        return "disconnected";
+      } else {
+        server_state_text.textContent=" not supported";
+        return server.concat(" not supported");
+      }
+    }
+
+    return "no indicators set";
+};
+
 function getDate(){
     var new_date = new Date();
     var date_array = new_date.toString().split(" ");
@@ -265,41 +326,53 @@ function timeSince(date) {
 }
 
 
-// =======================
-//         CHART
-// =======================
+const ctx = document.getElementById('myChart');
+const xdata = []
 
-// const ctx = document.getElementById('myChart');
-// const labels = []
-// const data = {
-//   labels: labels,
-//   datasets: [{
-//     label: 'My First Dataset',
-//     data: [],
-//     fill: false,
-//     borderColor: 'rgb(75, 192, 192)',
-//     tension: 0.8
-//   },
-// //   
-// ]
-// };
+
+const data = {
+  labels: xdata,
+  datasets: [
+  {
+    label: 'Pulse Wave',
+    data: [],
+    fill: false,
+    borderColor: 'rgb(255, 99, 132)',
+    tension: 0.8
+  }
+//   
+]
+};
       
-// const myLineChart = new Chart(ctx, {
-//                         type: 'line',
-//                         data: data,
-//                         options: {
-//                             scales: {
-//                             y: {
-//                                 beginAtZero: false
-//                             }
-//                             }
-//                         }
-//                     });
+const myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            maintainAspectRatio: false,
+                            // aspectRatio: 2,
+                            scales: {
+                                y: {
+                                    beginAtZero: false
+                                }
+                            }
+                        }
+                    });
 
-// function addData(chart, label, data) {
-//     chart.data.labels.push(label);
-//     chart.data.datasets.forEach((dataset) => {
-//         dataset.data.push(data);
-//     });
-//     chart.update();
-// }
+function addData(chart, label, pulse) {
+    
+    const max_data = 90;
+    
+    if (data.labels.length > max_data){
+        data.labels.shift()
+    }
+    chart.data.labels.push(label);
+
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(pulse);
+        console.log("Length + " + dataset.data.length)
+        if (dataset.data.length > max_data){
+            dataset.data.shift()
+        }
+    });
+    chart.update();
+}

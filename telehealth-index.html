@@ -17,31 +17,40 @@
         <div class="column left">
             <div id=meet></div>
         </div>
-        <!-- ihealth mqtt sensor messages div -->
+        
+        <!-- _________________ -->
+        <!-- pulse wave graph -->
+        <!-- _________________ -->
         <div class="column right">
+            <div class = "col">
+                <div class="card mb-3" style="max-width: 100%; padding: 10px; margin: 5px; background-color: white; border:1px solid #ff9999" >
+                    <div class="card-header">Graph
+                    </div>
+                    <div class="card-body chart-container" style ="max-height: 200px; margin-bottom: 5px;">
+                        <canvas id="myChart" ></canvas>
+                    </div>
+                </div>
+            </div>
             <!-- temperature sensor div -->
-            <!-- <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
-                <canvas id="myChart" style ="min-height:100px; max-height: 200px;"></canvas>
-            </div> -->
             <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
                 <p style="font-family: arial; margin: 5px">TEMPERATURE</p>
                 <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color: white" id="thermometer">temp(c): ...</p>
 
-                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "temp_time"></h6>
+                <h6 style = "margin-top: 5px; margin-bottom: 5px" id = "temp_time"></h6>
             </div>
             <!-- oximeter sensor div -->
             <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
                 <p style="font-family: arial; margin: 5px">OXIMETER</p>
                 <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color: white" id = "bloodoxygen">spO2: ...</p>
                 <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color:white" id = "heartrate">hr(bpm): ...</p>
-                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "oximeter_time"></h6>
+                <h6 style = "margin-top: 5px; margin-bottom: 5px" id = "oximeter_time"></h6>
             </div>
             <!-- blood pressure sensor div -->
             <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
                 <p style="font-family: arial; margin: 5px;">BLOOD PRESSURE</p>
                 <p style="padding: 5%; border: 1px solid red; border-radius: 10px;margin: 5px;  background-color:white" id = "bpressure_high">bp high: ...</p>
                 <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color:white" id = "bpressure_low">bp low: ...</p>
-                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "bp_time"></h6>
+                <h6 style = "margin-top: 5px; margin-bottom: 5px" id = "bp_time"></h6>
             </div>
             <!-- user role div -->
             <div style = " padding: 10px; margin: 5px; background-color: #ffffff">
@@ -51,6 +60,13 @@
                     <input type="radio" id="html" name="user_type" value="AN" onClick="setUser();">Attending Nurse
                 </form>
             </div>
+            <div style = " padding: 10px; margin: 5px; background-color: #ffffff">
+                <p style="margin: auto;">System state:</p>
+                <p id="browser-icon" style="display: inline; font-size: 15px; margin: auto; color: green;">[+] </p><p style="display:inline;font-size:14"> Browser</p><p id="browser-text" style="display:inline;font-size:14"> supported</p><br>
+                <p id="server1-icon" style="display: inline; font-size: 15px; margin: auto; color: green;">[+] </p><p style="display:inline;font-size:14"> WebRTC</p><p id="server1-text" style="display:inline;font-size:14"> connected</p><br>
+                <p id="server2-icon" style="display: inline; font-size: 15px; margin: auto; color: green;">[+] </p><p style="display:inline;font-size:14"> MQTT</p><p id="server2-text" style="display:inline;font-size:14"> connected</p><br>
+            </div>
+            
         </div>
     </div>
 </body>
