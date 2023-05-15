@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>La Trobe Telehealth Demo Portal </title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://jitsi-telehealth.mywire.org/external_api.js"></script>  <!-- Include the script from here. It should be included in your jitsi installation. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.js" integrity="sha512-p8OrcnawEEpEiY7S96nMeaShY5AMcdRFYgnaR0ZmOgMSgL9pLNE4x5+MB0FTol7GeJGzEd9m4MAmmD8urOscvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+    <script src="index.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+</head>
+<body style="background-color:rgb(210, 210, 210);">
+    <div class="row">
+        <!-- jitsi meet video div -->
+        <div class="column left">
+            <div id=meet></div>
+        </div>
+        <!-- ihealth mqtt sensor messages div -->
+        <div class="column right">
+            <!-- temperature sensor div -->
+            <!-- <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <canvas id="myChart" style ="min-height:100px; max-height: 200px;"></canvas>
+            </div> -->
+            <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <p style="font-family: arial; margin: 5px">TEMPERATURE</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color: white" id="thermometer">temp(c): ...</p>
+
+                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "temp_time"></h6>
+            </div>
+            <!-- oximeter sensor div -->
+            <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <p style="font-family: arial; margin: 5px">OXIMETER</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color: white" id = "bloodoxygen">spO2: ...</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color:white" id = "heartrate">hr(bpm): ...</p>
+                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "oximeter_time"></h6>
+            </div>
+            <!-- blood pressure sensor div -->
+            <div style = " border-radius: 1px; padding: 10px; margin: 5px; margin-bottom:10px; background-color: #ffffff">
+                <p style="font-family: arial; margin: 5px;">BLOOD PRESSURE</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px;margin: 5px;  background-color:white" id = "bpressure_high">bp high: ...</p>
+                <p style="padding: 5%; border: 1px solid red; border-radius: 10px; margin: 5px; background-color:white" id = "bpressure_low">bp low: ...</p>
+                <h6 style = "margin-top: -10px; margin-bottom: 5px" id = "bp_time"></h6>
+            </div>
+            <!-- user role div -->
+            <div style = " padding: 10px; margin: 5px; background-color: #ffffff">
+                <form id="user_type_form" style = "margin-bottom: auto;">
+                    <p style = "margin: auto;">Please select your role:</p>
+                    <input type="radio" id="html" name="user_type" value="RD" onClick="setUser();">Remote Doctor<br>
+                    <input type="radio" id="html" name="user_type" value="AN" onClick="setUser();">Attending Nurse
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
