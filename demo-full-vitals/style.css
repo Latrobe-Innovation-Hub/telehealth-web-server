@@ -1,0 +1,78 @@
+* {
+    box-sizing: border-box;
+}
+
+.row {
+    width: 100%;
+}
+
+/* Create two unequal columns that floats next to each other */
+.column {
+    float: left;
+    padding: 10px;
+    height: 100%;
+    /* Should be removed. Only for demonstration */
+}
+
+.left {
+    width: 75%;
+    background-color: white;
+}
+
+.right {
+    width: 25%;
+    vertical-align: middle;
+    background-color:#455964
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.btn-group button {
+    background-color: MediumSeaGreen;
+    border: 1px solid 808080;
+    color: black;
+    padding: 10px 24px;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+}
+
+.btn-group button:not(:last-child) {
+    border-bottom: none;
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.btn-group button:hover {
+    background-color: #414040;
+}
+
+.blinking{
+    animation:blinkingText 1.2s infinite;
+    font-size: 35px;
+}
+@keyframes blinkingText{
+    0%{     color: rgb(0, 108, 5);    }
+    49%{    color: rgb(0, 108, 5); }
+    60%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: rgb(0, 108, 5);    }
+}
+
+/* .dot {
+
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  margin: auto;
+} */
