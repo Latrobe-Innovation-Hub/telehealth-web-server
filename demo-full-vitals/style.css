@@ -69,6 +69,11 @@
     100%{   color: rgb(0, 108, 5);    }
 }
 
+
+.chart-container {
+    position: relative;
+    margin: auto;
+}
 /* .dot {
 
   background-color: #bbb;

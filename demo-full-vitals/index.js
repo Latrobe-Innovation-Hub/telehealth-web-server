@@ -1,3 +1,11 @@
+// set initial server status html
+//   serve1  = jitsi
+//   server2 = rabbitmq
+//   browser = jitsi browser support
+server_status("server1", "connecting");
+server_status("server2", "connecting");
+server_status("browser", "checking");
+
 // ===========================
 // JITSI API CALL CODE SECTION
 // ===========================
@@ -5,44 +13,96 @@
 // set url for jitsi meet server API
 const domain = "jitsi-telehealth.mywire.org";
 
+// set general preferred codec
+const videoQuality = {preferredCodec: "VP9", };
+
+// set general preferred video options
+var videoFrameRate = { ideal: 30, max: 30, min: 15};
+var videoHeight =  { ideal: 1080, max: 1080, min: 360};
+
+var videoConstraints = { frameRate: videoFrameRate,
+                         height: videoHeight};
+
+// set p2p preferred video options
+var p2pFrameRate = { ideal: 30, max: 30, min: 15}
+
+var p2p = { preferredCodec: "VP9",
+            video: { frameRate: p2pFrameRate}};
+
+// config overwire
+var config = { disableTileView: true,
+               resolution: 1080,
+               videoQuality: videoQuality,
+               constraints: {video: videoConstraints},
+               //enableNoisyMicDetection: false,
+               disableAGC: true, // <- requires audio testing!
+               disableAP: true,  // <- requires audio testing!
+               p2p: p2p};
+
 // set jitsi meet API connection options
-const options = {
-    roomName: "telehealth-demo",
-    userInfo: {
-        displayName: "unspecified",
-    },
-    //width: 1200px,
-    //height: 900px,
-    parentNode: document.getElementById("meet"),    //Now, you declare here which element should parent your stream.
-    configOverwrite: { disableTileView: false // Set the size of the local participant's tile to 20% of the screen width // Disable tile view for small meetings
- },     //You can turn on or off config elements with this prop.
-    interfaceConfigOverwrite: {
-        //TOOLBAR_BUTTONS: []
-    },
+var options = {
+    //roomName: "telehealth-demo",
+    disableSimulcast: true,
+    userInfo: { displayName: "unspecified",},
+    parentNode : document.getElementById("meet"),
+    configOverwrite : config,
+    interfaceConfigOverwrite: { },
+
+    // update server status
+    onload: function set_state() {
+        server_status("server1", "connected");
+   }
 };
 
-
-//Testing to see if the live button will hide after a delay. 
-// Potential method could be to add a dot for 5 seconds when a message is received
-// var temp_live = document.getElementById("thermometer_dot");
-// temp_live.innerHTML=".";
-//             setTimeout(() => {
-//                 temp_live.style.display="none"
-//             },5000);
-
-var api = {}; 
+var api = {};
 
 // instantiate jitsi meet connection to API
 try {
     api = new JitsiMeetExternalAPI(domain, options);
 } catch (error) {
     console.log("== [jitsi] FAILED! ==", error);
+    server_status("server1", "disconnected");
 };
+
+// set password for moderator
+//api.addEventListener('participantRoleChanged', function (event) {
+//    if (event.role === "moderator") {
+//        api.executeCommand('password', 'demo');
+//    }
+//});
+
+// turn on lobby for moderators room
+try {
+    api.addEventListener('participantRoleChanged', function (event) {
+        if(event.role === 'moderator') {
+            api.executeCommand('toggleLobby', true);
+        }
+    });
+} catch (error) {
+    console.log("== [jitsi] FAILED! ==", error);
+    server_status("server1", "disconnected");
+}
+
+// check browser support
+try{
+    api.addEventListener('browserSupport', function (event) {
+        if(event.supported === true) {
+            server_status("browser", "supported");
+            console.log("== [JITSI] BROWSER SUPPORTED:", event.supported);
+        } else if (event.supported === false) {
+            server_status("browser", "not supported");
+            console.log("== [JITSI] BROWSER SUPPORTED:", event.supported);
+        }
+    });
+} catch (error) {
+    console.log("== [jitsi] FAILED! ==", error);
+    server_status("server1", "disconnected");
+}
 
 // set jitsi user name via html radio buttons
 function setUser() {
     var userType = document.getElementById("user_type_form").user_type;
-    
+
     if (userType.value == "RD") {
         console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Remote Doctor\"", " ==");
         api.executeCommand("displayName", "Remote Doctor");
@@ -52,12 +112,13 @@ function setUser() {
     }
 };
 
+
 // ===============================
 // MQTT PAHO/RABBITMQ CODE SECTION
 // ===============================
 
 // set broker url
-var wsbroker = "rabbitmq-telehealth.mywire.org";
+var wsbroker = "rabbitmq-telehealth.freeddns.org";
 
 // set websocket ports
 var wsport = 15675;
@@ -78,6 +139,7 @@ var pahoOptions = {
     // called when the client connection succeeds
     onSuccess: function () {
         console.log("== [PAHO] CONNECTION SUCCESS ==");
+        server_status("server2", "connected");
         
         // subscribe to topics
         // ===================
@@ -95,6 +157,7 @@ var pahoOptions = {
     // called when the client connection fails
     onFailure: function () {
         console.log("== [PAHO] CONNECTION FAILURE ==");
+        server_status("server2", "disconnected");
     },
 };
 
@@ -111,7 +174,7 @@ client.onConnectionLost = function (responseObject) {
 var first_msg_oxy = true;
 var first_msg_thermo = true;
 var first_msg_bp = true;
-
+var pulse_array = []
 // called when a message arrives
 client.onMessageArrived = function (message) {
     console.log("== [PAHO] MESSAGE ARRIVED! : " + message.payloadString + " ==");
@@ -147,16 +210,17 @@ client.onMessageArrived = function (message) {
             // update message web timestamp
             var time_temp = document.getElementById("temp_time");
             time_temp.innerHTML =  getDate();
+            addData(myLineChart, time, temp);
 
 
-            // Set live dot to appear
-            // Delay of 5 seconds which will hide the live button when no messages received.
-            var temp_live = document.getElementById("thermometer_dot");
-            temp_live.innerHTML = ".";
-            setTimeout(() => {
-              temp_live.style.display="none";
+        // Set live dot to appear
+        // Delay of 5 seconds which will hide the live button when no messages received.
+        //     var temp_live = document.getElementById("thermometer_dot");
+        //     temp_live.innerHTML = ".";
+        //     setTimeout(() => {
+        //       temp_live.style.display="none";
 
-            },5000);
+        //     },5000);
         }
     }
 
@@ -175,6 +239,20 @@ client.onMessageArrived = function (message) {
             var oxygen_data = document.getElementById("bloodoxygen");
             var oximeter_array = message.payloadString.split(",");
             var oxygen = parseInt(oximeter_array[1]);
+
+            var payload = message.payloadString;
+            var start_index = payload.indexOf("[") + 1;
+            var end_index = payload.indexOf("]");
+            var pulsewave_str = payload.slice(start_index, end_index);
+            var pulsewave_array = pulsewave_str.split(",");
+            console.log("LOGGING" + pulsewave_array)
+            pulse_array.push(pulsewave_array);
+            const y_data = pulse_array
+            const x_data = time
+
+           pulsewave_array.forEach((pulse) => {
+               addData(myLineChart, " ", pulse);
+           })
 
             // update message web data
             oxygen_data.innerHTML = "spO2: " + oxygen;
@@ -230,7 +308,53 @@ client.connect(pahoOptions);
 // HELPER FUNCTION SECTION
 // =======================
 
-// does...
+// update system state html
+// NOTE: I know this code is messy...
+function server_status(server, state) {
+    var icon = "-icon";
+    var text = "-text";
+
+    let server_icon = server.concat(icon);
+    let server_text = server.concat(text);
+
+    var server_state_icon = document.getElementById(server_icon);
+    var server_state_text = document.getElementById(server_text);
+
+    if (state == "connecting" || state == "checking") {
+      server_state_icon.textContent="[-] ";
+      server_state_icon.style.color="orange";
+      if (state == "connecting") {
+        server_state_text.textContent=" connecting";
+        return server.concat(" connecting");
+      } else {
+        server_state_text.textContent=" checking";
+        return server.concat(" checking");
+      }
+    } else if (state == "connected" || state == "supported") {
+      server_state_icon.textContent="[+] ";
+      server_state_icon.style.color="green";
+      if (state == "connected") {
+        server_state_text.textContent=" connected";
+        return "connected";
+      } else {
+        server_state_text.textContent=" supported";
+        return server.concat(" supported");
+      }
+    } else if (state == "disconnected" || state == "not supported") {
+      server_state_icon.textContent="[x] ";
+      server_state_icon.style.color="red";
+      if (state == "disconnected") {
+        server_state_text.textContent=" disconnected";
+        return "disconnected";
+      } else {
+        server_state_text.textContent=" not supported";
+        return server.concat(" not supported");
+      }
+    }
+
+    return "no indicators set";
+};
+
 function getDate(){
     var new_date = new Date();
     var date_array = new_date.toString().split(" ");
@@ -287,6 +411,8 @@ const myLineChart = new Chart(ctx, {
                         type: 'line',
                         data: data,
                         options: {
+                            maintainAspectRatio: false,
+                            // aspectRatio: 2,
                             scales: {
                                 y: {
                                     beginAtZero: false
