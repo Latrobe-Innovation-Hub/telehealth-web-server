@@ -1,3 +1,11 @@
+// set initial server status html
+//   serve1  = jitsi
+//   server2 = rabbitmq
+//   browser = jitsi browser support
+server_status("server1", "connecting");
+server_status("server2", "connecting");
+server_status("browser", "checking");
+
 // ===========================
 // JITSI API CALL CODE SECTION
 // ===========================
@@ -5,44 +13,96 @@
 // set url for jitsi meet server API
 const domain = "jitsi-telehealth.mywire.org";
 
+// set general preferred codec
+const videoQuality = {preferredCodec: "VP9", };
+
+// set general preferred video options
+var videoFrameRate = { ideal: 30, max: 30, min: 15};
+var videoHeight =  { ideal: 1080, max: 1080, min: 360};
+
+var videoConstraints = { frameRate: videoFrameRate,
+                         height: videoHeight};
+
+// set p2p preferred video options
+var p2pFrameRate = { ideal: 30, max: 30, min: 15}
+
+var p2p = { preferredCodec: "VP9",
+            video: { frameRate: p2pFrameRate}};
+
+// config overwire
+var config = { disableTileView: true,
+               resolution: 1080,
+               videoQuality: videoQuality,
+               constraints: {video: videoConstraints},
+               //enableNoisyMicDetection: false,
+               disableAGC: true, // <- requires audio testing!
+               disableAP: true,  // <- requires audio testing!
+               p2p: p2p};
+
 // set jitsi meet API connection options
-const options = {
-    roomName: "telehealth-demo",
-    userInfo: {
-        displayName: "unspecified",
-    },
-    //width: 1200px,
-    //height: 900px,
-    parentNode: document.getElementById("meet"),    //Now, you declare here which element should parent your stream.
-    configOverwrite: { disableTileView: false // Set the size of the local participant's tile to 20% of the screen width // Disable tile view for small meetings
- },     //You can turn on or off config elements with this prop.
-    interfaceConfigOverwrite: {
-        //TOOLBAR_BUTTONS: []
-    },
+var options = {
+    //roomName: "telehealth-demo",
+    disableSimulcast: true,
+    userInfo: { displayName: "unspecified",},
+    parentNode : document.getElementById("meet"),
+    configOverwrite : config,
+    interfaceConfigOverwrite: { },
+
+    // update server status
+    onload: function set_state() {
+        server_status("server1", "connected");
+   }
 };
 
-
-//Testing to see if the live button will hide after a delay. 
-// Potential method could be to add a dot for 5 seconds when a message is received
-// var temp_live = document.getElementById("thermometer_dot");
-// temp_live.innerHTML=".";
-//             setTimeout(() => {
-//                 temp_live.style.display="none"
-//             },5000);
-
-var api = {}; 
+var api = {};
 
 // instantiate jitsi meet connection to API
 try {
     api = new JitsiMeetExternalAPI(domain, options);
 } catch (error) {
     console.log("== [jitsi] FAILED! ==", error);
+    server_status("server1", "disconnected");
 };
+
+// set password for moderator
+//api.addEventListener('participantRoleChanged', function (event) {
+//    if (event.role === "moderator") {
+//        api.executeCommand('password', 'demo');
+//    }
+//});
+
+// turn on lobby for moderators room
+try {
+    api.addEventListener('participantRoleChanged', function (event) {
+        if(event.role === 'moderator') {
+            api.executeCommand('toggleLobby', true);
+        }
+    });
+} catch (error) {
+    console.log("== [jitsi] FAILED! ==", error);
+    server_status("server1", "disconnected");
+}
+
+// check browser support
+try{
+    api.addEventListener('browserSupport', function (event) {
+        if(event.supported === true) {
+            server_status("browser", "supported");
+            console.log("== [JITSI] BROWSER SUPPORTED:", event.supported);
+        } else if (event.supported === false) {
+            server_status("browser", "not supported");
+            console.log("== [JITSI] BROWSER SUPPORTED:", event.supported);
+        }
+    });
+} catch (error) {
+    console.log("== [jitsi] FAILED! ==", error);
+    server_status("server1", "disconnected");
+}
 
 // set jitsi user name via html radio buttons
 function setUser() {
     var userType = document.getElementById("user_type_form").user_type;
-    
+
     if (userType.value == "RD") {
         console.log("== [JITSI] SETTING USER TYPE AS: ", "\"Remote Doctor\"", " ==");
         api.executeCommand("displayName", "Remote Doctor");
@@ -51,6 +111,7 @@ function setUser() {
         api.executeCommand("displayName", "Attending Nurse");
     }
 };
+
 
 // ===============================
 // MQTT PAHO/RABBITMQ CODE SECTION
@@ -78,6 +139,7 @@ var pahoOptions = {
     // called when the client connection succeeds
     onSuccess: function () {
         console.log("== [PAHO] CONNECTION SUCCESS ==");
+        server_status("server2", "connected");
         
         // subscribe to topics
         // ===================
@@ -95,6 +157,7 @@ var pahoOptions = {
     // called when the client connection fails
     onFailure: function () {
         console.log("== [PAHO] CONNECTION FAILURE ==");
+        server_status("server2", "disconnected");
     },
 };
 
@@ -245,8 +308,8 @@ client.connect(pahoOptions);
 // HELPER FUNCTION SECTION
 // =======================
 
-// does...
-
+// update system state html
+// NOTE: I know this code is messy...
 function server_status(server, state) {
     var icon = "-icon";
     var text = "-text";
