@@ -1,3 +1,12 @@
+var url_string = window.location.href; // www.test.com?room=test
+var url = new URL(url_string);
+var paramRoom = url.searchParams.get("room");
+
+// Check if paramRoom is null or empty, then assign the default value
+if (!paramRoom) {
+  paramRoom = "la-trobe-telehealth-demo"; // set room default if none given
+}
+
 // set initial server status html
 //   serve1  = jitsi
 //   server2 = rabbitmq
@@ -41,7 +50,7 @@ var config = { disableTileView: true,
 
 // set jitsi meet API connection options
 var options = {
-    //roomName: "telehealth-demo",
+    roomName: paramRoom,
     disableSimulcast: true,
     userInfo: { displayName: "unspecified",},
     parentNode : document.getElementById("meet"),
